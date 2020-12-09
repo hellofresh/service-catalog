@@ -1,0 +1,5 @@
+organization_upstream: kubernetes-sigs
+organization_fork: hellofresh
+repository_name: service-catalog
+base_branch_upstream: master
+base_branch_fork: hellofresh
