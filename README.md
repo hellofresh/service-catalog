@@ -13,6 +13,17 @@ Service Catalog lets you provision cloud services directly from the comfort of n
 This project is in incubation to bring integration with service
 brokers to the Kubernetes ecosystem via the [Open Service Broker API](https://github.com/openservicebrokerapi/servicebroker).
 
+### HelloFresh fork
+
+This is a fork of https://github.com/kubernetes-sigs/service-catalog.
+
+### Contribution guide
+
+- Hellofresh internal contributions must be merged into `hellofresh` branch
+- The `master` branch is synchronized with upstream automatically
+- Every time `master` branch is updated, it automatically merged to `hellofresh` branch
+- Releases of docker image and helm chart are pushed to our internal repositories
+
 ### Documentation
 
 Our goal is to have extensive use-case and functional documentation.
