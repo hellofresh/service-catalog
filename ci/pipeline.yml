@@ -3,6 +3,7 @@ resources:
   - name: repo-upstream-base
     type: git
     icon: github
+    check_every: 1h
     source:
       uri: https://((secrets.github_token))@github.com/((organization_upstream))/((repository_name)).git
       branch: ((base_branch_upstream))
@@ -10,6 +11,7 @@ resources:
   - name: repo-fork-base
     type: git
     icon: github
+    check_every: 1h
     source:
       uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
       branch: ((base_branch_upstream))
