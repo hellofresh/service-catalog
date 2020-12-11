@@ -3,3 +3,6 @@ organization_fork: hellofresh
 repository_name: service-catalog
 base_branch_upstream: master
 base_branch_fork: hellofresh
+slack_username: service-catalog-ci
+slack_channel: platform-upstream-updates
+slack_icon: https://hellofresh.github.io/concourse-resources/logo.png

@@ -1,3 +1,11 @@
+resource_types:
+
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+      tag: latest
+
 resources:
 
   - name: repo-upstream-base
@@ -16,6 +24,12 @@ resources:
       uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
       branch: ((base_branch_upstream))
 
+- name: slack-notification
+  type: slack-notification
+  icon: slack
+  source:
+    url: ((secrets.slack_url))
+
 jobs:
 
   - name: sync-base-branch
@@ -26,3 +40,43 @@ jobs:
       - put: repo-fork-base
         params:
           repository: repo-upstream-base
+
+  - name: create-pull-request
+    serial: true
+    plan:
+      - get: repo-fork-base
+        trigger: true
+      - get: repo-fork
+
+      - task: create-pull-request
+        file: repo-fork/ci/tasks/create-pull-request.yml
+        input_mapping:
+          pull-request-input: repo-fork-base
+          source: repo-fork
+        params:
+          GITHUB_TOKEN: ((secrets.github_token))
+          BASE_OWNER: ((organization_fork))
+          BASE_BRANCH: ((base_branch_fork))
+          HEAD_OWNER: ((organization_fork))
+          HEAD_BRANCH: ((base_branch_upstream))
+          MESSAGE: 'Automatic update from upstream'
+
+      - task: prepare-slack-notification
+        file: repo-fork/ci/tasks/prepare-slack-message.yml
+        input_mapping:
+          slack-message-input: pull-request-output
+          source: repo-fork
+        params:
+          MESSAGE: Service catalog upstream updated. Consider merging the PR.
+          BUTTONS:
+            - text: Pull Request
+              url: slack-message-input/url.txt
+              type: button
+              style: primary
+
+      - put: slack-notification
+        params:
+          username: ((slack_username))
+          channel: ((slack_channel))
+          icon_url: ((slack_icon))
+          attachments_file: slack-message-output/attachments.json
