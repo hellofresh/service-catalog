@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: python
+
+inputs:
+- name: source
+- name: slack-message-input
+
+outputs:
+- name: slack-message-output
+
+run:
+  path: source/ci/scripts/prepare-slack-message.py
+
+params:
+  MESSAGE: 'Test'
+  BUTTONS:
+    - text: Test
+      url: slack-message-input/url.txt
+      type: button
+      style: primary
