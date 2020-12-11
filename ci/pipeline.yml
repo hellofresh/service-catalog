@@ -24,11 +24,19 @@ resources:
       uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
       branch: ((base_branch_upstream))
 
-- name: slack-notification
-  type: slack-notification
-  icon: slack
-  source:
-    url: ((secrets.slack_url))
+  - name: repo-fork
+    type: git
+    icon: github
+    check_every: 1h
+    source:
+      uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
+      branch: ((base_branch_fork))
+
+  - name: slack-notification
+    type: slack-notification
+    icon: slack
+    source:
+      url: ((secrets.slack_url))
 
 jobs:
 
