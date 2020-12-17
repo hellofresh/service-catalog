@@ -8,6 +8,7 @@ image_resource:
     tag: '1.11'
 
 inputs:
+- name: ci-branch
 - name: source
 - name: pull-request-input
 
@@ -15,7 +16,7 @@ outputs:
 - name: pull-request-output
 
 run:
-  path: source/ci/scripts/create-pull-request.sh
+  path: ci-branch/ci/scripts/create-pull-request.sh
 
 params:
   GITHUB_TOKEN: ''

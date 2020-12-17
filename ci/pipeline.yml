@@ -32,6 +32,14 @@ resources:
       uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
       branch: ((base_branch_fork))
 
+  - name: ci-branch
+    type: git
+    icon: github
+    check_every: 1h
+    source:
+      uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
+      branch: ((ci_branch))
+
   - name: slack-notification
     type: slack-notification
     icon: slack
@@ -55,9 +63,10 @@ jobs:
       - get: repo-fork-base
         trigger: true
       - get: repo-fork
+      - get: ci-branch
 
       - task: create-pull-request
-        file: repo-fork/ci/tasks/create-pull-request.yml
+        file: ci-branch/ci/tasks/create-pull-request.yml
         input_mapping:
           pull-request-input: repo-fork-base
           source: repo-fork
@@ -70,10 +79,9 @@ jobs:
           MESSAGE: 'Automatic update from upstream'
 
       - task: prepare-slack-notification
-        file: repo-fork/ci/tasks/prepare-slack-message.yml
+        file: ci-branch/ci/tasks/prepare-slack-message.yml
         input_mapping:
           slack-message-input: pull-request-output
-          source: repo-fork
         params:
           MESSAGE: Service catalog upstream updated. Consider merging the PR.
           BUTTONS:
