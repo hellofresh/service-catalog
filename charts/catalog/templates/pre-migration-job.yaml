@@ -1,3 +1,4 @@
+{{- if .Values.migration.enabled -}}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
@@ -156,3 +157,4 @@ spec:
           volumeMounts:
           - name: storage
             mountPath: /data
+{{- end }}
