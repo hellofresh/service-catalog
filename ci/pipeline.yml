@@ -118,7 +118,7 @@ jobs:
               bump: patch
 
       - task: service-catalog-create-chart
-        file: ci-branch/tasks/create-chart.yml
+        file: ci-branch/ci/tasks/create-chart.yml
         input_mapping:
           version: catalog-chart-version
           source-code: repo-fork

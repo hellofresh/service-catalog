@@ -14,7 +14,7 @@ inputs:
   - name: version
 
 run:
-  path: ci-branch/scripts/create-chart.sh
+  path: ci-branch/ci/scripts/create-chart.sh
 
 params:
   CHART_PATH: charts/my-chart
