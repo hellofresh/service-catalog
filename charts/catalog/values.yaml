@@ -143,3 +143,6 @@ priorityClassName: ""
 
 migrationJob:
   enabled: true
+
+cleanerJob:
+  enabled: true
