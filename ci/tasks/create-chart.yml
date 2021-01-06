@@ -1,0 +1,25 @@
+
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine/helm
+    tag: "3.4.2"
+
+inputs:
+  - name: ci-branch
+  - name: source-code
+  - name: version
+
+run:
+  path: ci-branch/scripts/create-chart.sh
+
+params:
+  CHART_PATH: charts/my-chart
+  CHART_REPO: ((defaults.helm_repo_url))
+  VERSION_FILE: version/version
+  ARTIFACTORY_USERNAME: ((defaults.artifactory_user))
+  ARTIFACTORY_PASSWORD: ((defaults.artifactory_pass))
+  TAG_AS_LATEST: true
