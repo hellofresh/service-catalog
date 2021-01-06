@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # Ensure this script fails if anything errors
 set -e
 
@@ -33,16 +33,12 @@ CHART_PACKAGE_SHA1=$(sha1sum "${CHART_PACKAGE_PATH}" | cut -d ' ' -f 1)
 CHART_PACKAGE_SHA256=$(sha256sum "${CHART_PACKAGE_PATH}" | cut -d ' ' -f 1)
 CHART_PACKAGE_MD5=$(md5sum "${CHART_PACKAGE_PATH}" | cut -d ' ' -f 1)
 
-user_args=("${user_args[@]}"
-    "--header" "X-Checksum-MD5:${CHART_PACKAGE_MD5}"
-    "--header" "X-Checksum-Sha1:${CHART_PACKAGE_SHA1}"
-    "--header" "X-Checksum-Sha256:${CHART_PACKAGE_SHA256}"
-)
+user_args="--header X-Checksum-MD5:${CHART_PACKAGE_MD5} --header X-Checksum-Sha1:${CHART_PACKAGE_SHA1} --header X-Checksum-Sha256:${CHART_PACKAGE_SHA256}"
 
 # Upload package
-curl "${user_args[@]}" --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_PACKAGE}"
+curl $user_args --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_PACKAGE}"
 
 if [ "${TAG_AS_LATEST}" = "true" ]; then
   CHART_LATEST="${CHART_NAME}-latest.tgz"
-  curl "${user_args[@]}" --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_LATEST}"
+  curl $user_args --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_LATEST}"
 fi
