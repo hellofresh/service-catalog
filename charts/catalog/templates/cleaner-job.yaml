@@ -1,3 +1,4 @@
+{{- if .Values.cleanerJob.enabled -}}
 kind: ServiceAccount
 apiVersion: v1
 metadata:
@@ -109,3 +110,4 @@ spec:
           - {{ template "fullname" . }}-controller-manager
           - --webhook-configurations
           - {{ template "fullname" . }}-webhook {{ template "fullname" . }}-validating-webhook
+{{- end }}
