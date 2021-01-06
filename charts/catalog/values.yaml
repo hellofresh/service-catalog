@@ -48,6 +48,8 @@ webhook:
     limits:
       cpu: 100m
       memory: 45Mi
+  affinity: {}
+  tolerations: []
 controllerManager:
   replicas: 1
   # deployment strategy for service-catalog controllerManager
@@ -97,6 +99,8 @@ controllerManager:
     limits:
       cpu: 100m
       memory: 30Mi
+  affinity: {}
+  tolerations: []
   # Attributes of the controller's service resource
   service:
     # Type of service; valid values are "LoadBalancer", "NodePort" and "ClusterIP"
