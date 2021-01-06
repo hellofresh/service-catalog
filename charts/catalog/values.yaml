@@ -137,5 +137,5 @@ persistence:
 # PriorityClass: system-cluster-critical
 priorityClassName: ""
 
-migration:
+migrationJob:
   enabled: true
