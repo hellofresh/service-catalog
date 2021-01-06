@@ -136,3 +136,6 @@ persistence:
 # ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
 # PriorityClass: system-cluster-critical
 priorityClassName: ""
+
+migration:
+  enabled: true
