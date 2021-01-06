@@ -46,6 +46,16 @@ resources:
     source:
       url: ((secrets.slack_url))
 
+  - name: catalog-chart-version
+    type: semver
+    source:
+      driver: git
+      initial_version: 0.0.0
+      uri: https://((secrets.github_token))@github.com/((organization_fork))/((repository_name)).git
+      branch: version-catalog-chart
+      file: version
+
+
 jobs:
 
   - name: sync-base-branch
@@ -96,3 +106,29 @@ jobs:
           channel: ((slack_channel))
           icon_url: ((slack_icon))
           attachments_file: slack-message-output/attachments.json
+
+  - name: 'release-service-catalog'
+    plan:
+      - in_parallel:
+          - get: repo-fork
+          - get: ci-branch
+
+          - get: catalog-chart-version
+            params:
+              bump: patch
+
+      - task: service-catalog-create-chart
+        file: ci-branch/tasks/create-chart.yml
+        input_mapping:
+          version: catalog-chart-version
+          source-code: repo-fork
+        params:
+          ARTIFACTORY_USERNAME: ((defaults.artifactory_username))
+          ARTIFACTORY_PASSWORD: ((defaults.artifactory_password))
+          CHART_REPO: ((defaults.helm_repo_url))
+          CHART_NAME: catalog
+          CHART_PATH: source-code/charts/catalog
+
+      - put: catalog-chart-version
+        params:
+          file: catalog-chart-version/version
