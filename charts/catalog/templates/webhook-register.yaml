@@ -1,16 +1,18 @@
-{{- $ca := genCA "service-catalog-webhook-ca" 3650 }}
-{{- $cn := printf "%s-webhook" (include "fullname" .) }}
-{{- $altName1 := printf "%s.%s" $cn .Release.Namespace }}
-{{- $altName2 := printf "%s.%s.svc" $cn .Release.Namespace }}
-{{- $cert := genSignedCert $cn nil (list $altName1 $altName2) 3650 $ca }}
+{{- $ca := empty .Values.webhook.tls.caInjectFrom | ternary (genCA "service-catalog-webhook-ca" 3650) dict }}
 apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
   name: {{ template "fullname" . }}-webhook
+{{- with .Values.webhook.tls.caInjectFrom }}
+  annotations:
+    cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ . }}"
+{{- end }}
 webhooks:
 - name: mutating.clusterservicebrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -23,7 +25,9 @@ webhooks:
     resources: ["clusterservicebrokers"]
 - name: mutating.clusterserviceclasses.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -36,7 +40,9 @@ webhooks:
     resources: ["clusterserviceclasses"]
 - name: mutating.serviceclasses.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -49,7 +55,9 @@ webhooks:
     resources: ["serviceclasses"]
 - name: mutating.clusterserviceplans.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -62,7 +70,9 @@ webhooks:
     resources: ["clusterserviceplans"]
 - name: mutating.serviceplans.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -75,7 +85,9 @@ webhooks:
     resources: ["serviceplans"]
 - name: mutating.servicebindings.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -88,7 +100,9 @@ webhooks:
     resources: ["servicebindings"]
 - name: mutating.servicebrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -101,7 +115,9 @@ webhooks:
     resources: ["servicebrokers"]
 - name: mutating.serviceinstances.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -117,10 +133,16 @@ apiVersion: admissionregistration.k8s.io/v1beta1
 kind: ValidatingWebhookConfiguration
 metadata:
   name: {{ template "fullname" . }}-validating-webhook
+{{- with .Values.webhook.tls.caInjectFrom }}
+  annotations:
+    cert-manager.io/inject-ca-from: "{{ $.Release.Namespace }}/{{ . }}"
+{{- end }}
 webhooks:
 - name: validating.status.servicebindings.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -133,7 +155,9 @@ webhooks:
     resources: ["servicebindings/status"]
 - name: validating.status.servicbrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -146,7 +170,9 @@ webhooks:
     resources: ["servicebrokers/status"]
 - name: validating.status.clusterservicbrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -159,7 +185,9 @@ webhooks:
     resources: ["clusterservicebrokers/status"]
 - name: validating.serviceinstances.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -172,7 +200,9 @@ webhooks:
     resources: ["serviceinstances"]
 - name: validating.clusterservicebrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -185,7 +215,9 @@ webhooks:
       resources: ["clusterservicebrokers"]
 - name: validating.servicebindings.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -198,7 +230,9 @@ webhooks:
     resources: ["servicebindings"]
 - name: validating.servicebrokers.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -211,7 +245,9 @@ webhooks:
       resources: ["servicebrokers"]
 - name: validating.serviceclasses.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -224,7 +260,9 @@ webhooks:
       resources: ["serviceclasses"]
 - name: validating.clusterserviceclasses.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -237,7 +275,9 @@ webhooks:
       resources: ["clusterserviceclasses"]
 - name: validating.serviceplans.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -250,7 +290,9 @@ webhooks:
       resources: ["serviceplans"]
 - name: validating.clusterserviceplans.servicecatalog.k8s.io
   clientConfig:
+{{- if not .Values.webhook.tls.caInjectFrom }}
     caBundle: {{ b64enc $ca.Cert }}
+{{- end }}
     service:
       name: {{ template "fullname" . }}-webhook
       namespace: "{{ .Release.Namespace }}"
@@ -262,6 +304,11 @@ webhooks:
       apiVersions: ["v1beta1"]
       resources: ["clusterserviceplans"]
 ---
+{{- if empty .Values.webhook.tls.caInjectFrom }}
+{{- $cn := printf "%s-webhook" (include "fullname" .) }}
+{{- $altName1 := printf "%s.%s" $cn .Release.Namespace }}
+{{- $altName2 := printf "%s.%s.svc" $cn .Release.Namespace }}
+{{- $cert := genSignedCert $cn nil (list $altName1 $altName2) 3650 $ca }}
 apiVersion: v1
 kind: Secret
 metadata:
@@ -271,7 +318,9 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
-type: Opaque
+type: "kubernetes.io/tls"
 data:
   tls.crt: {{ b64enc $cert.Cert }}
   tls.key: {{ b64enc $cert.Key }}
+  ca.crt: {{ b64enc $ca.Cert }}
+{{- end }}

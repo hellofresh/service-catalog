@@ -94,7 +94,11 @@ spec:
       volumes:
       - name: service-catalog-webhook-cert
         secret:
+          {{- if and (.Values.webhook.tls.caInjectFrom) (.Values.webhook.tls.secret) }}
+          secretName: {{ .Values.webhook.tls.secret }}
+          {{- else }}
           secretName: {{ template "fullname" . }}-webhook-cert
+          {{- end }}
           items:
           - key: tls.crt
             path: tls.crt
