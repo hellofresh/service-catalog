@@ -50,6 +50,10 @@ webhook:
       memory: 45Mi
   affinity: {}
   tolerations: []
+  # TLS PKI for the TLS-enabled endpoint
+  tls:
+    secret: null
+    caInjectFrom: null
 controllerManager:
   replicas: 1
   # deployment strategy for service-catalog controllerManager
