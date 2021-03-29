@@ -22,4 +22,3 @@ params:
   VERSION_FILE: version/version
   ARTIFACTORY_USERNAME: ((defaults.artifactory_user))
   ARTIFACTORY_PASSWORD: ((defaults.artifactory_pass))
-  TAG_AS_LATEST: true

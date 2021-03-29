@@ -36,8 +36,3 @@ user_args="${user_args} --header X-Checksum-MD5:${CHART_PACKAGE_MD5} --header X-
 
 # Upload package
 curl $user_args --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_PACKAGE}"
-
-if [ "${TAG_AS_LATEST}" = "true" ]; then
-  CHART_LATEST="${CHART_NAME}-latest.tgz"
-  curl $user_args --fail --upload-file "${CHART_PACKAGE_PATH}" "${CHART_REPO}/${CHART_LATEST}"
-fi
