@@ -7,6 +7,10 @@ metadata:
     chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
     release: "{{ .Release.Name }}"
     heritage: "{{ .Release.Service }}"
+{{- if and (.Values.webhook.tls.caInjectFrom) (.Values.webhook.tls.secret) }}
+  annotations:
+    rollout.restart/auto: "true"
+{{- end }}
 spec:
   replicas: 1
   strategy: {{ toYaml .Values.webhook.strategy | nindent 4 }}
